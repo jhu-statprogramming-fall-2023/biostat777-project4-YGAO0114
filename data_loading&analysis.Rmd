@@ -33,8 +33,8 @@ census_api_key("ef8220c60723bd563afc06a143779defcea2413a")
 - check and select the data
 ```{r}
 # check the variable
-v19 <- load_variables(2019, "acs5", cache = TRUE)
-v19_acs1 <- load_variables(2019, "acs1", cache = TRUE)
+v19 <- load_variables(2019, "acs5", cache = TRUE) # 2015-2019
+v19_acs1 <- load_variables(2019, "acs1", cache = TRUE) # one year
 v18 <- load_variables(2018, "acs5", cache = TRUE)
 v18_acs1 <- load_variables(2018, "acs1", cache = TRUE)
 v17 <- load_variables(2017, "acs5", cache = TRUE)
@@ -42,33 +42,171 @@ v17_acs1 <- load_variables(2017, "acs1", cache = TRUE)
 
 # state level variables
 vars <- c(
-        # sex
-        male = "B98012_002", female = "B98012_003",
-        # enroll school
-        less_high = "B26106_027", high = "B26106_028",
-        some_coll = "B26106_029", bache = "B26106_030",
-        # marital status
-        no_mar = "B26104_002", mar = "B26104_003", 
-        divorce = "B26104_006", Widowed = "B26104_005",
         # median earning for the past 12 months 
-        med_earn = "B26119_001", 
-        m_med_earn = "B26119_002", f_med_earn = "B26119_003"
-          )
-# select the variables
-df19_edu <- get_acs(geography = "state", 
-                       variables = vars,
-                       year = 2019,
-                       sumfile = "dhc",
-                       output = "wide")
-df18_edu <- get_acs(geography = "state", 
-                       variables = vars,
-                       year = 2018,
-                       sumfile = "dhc",
-                       output = "wide")
-df17_edu <- get_acs(geography = "state", 
-                       variables = vars,
-                       year = 2017,
-                       sumfile = "dhc",
-                       output = "wide")
+        med_earn = "B20002_001", m_med_earn = "B20002_002", f_med_earn = "B20002_003",
+        
+        # high educational degree
+        Associate_degree = "B15003_021",
+        Bachelor_degree ="B15003_022",
+        Master_degree = "B15003_023",
+        Professional_school_degree = "B15003_024",
+        Doctorate_degree = "B15003_025",
+        
+        # sex
+        male = "B01001_002", female = "B01001_026",
+        # race
+        white = "B02001_002", black = "B02001_003", 
+        Amer_Indian = "B02001_004", asian = "B02001_005", 
+        hawa = "B02001_006", other_race = "B02001_007",
+        
+        # enroll school -- high educational people
+        ## Total:!!Enrolled in school:!!Enrolled in college, undergraduate years:
+        total_coll = "B14001_008", total_coll_male = "B14002_019", total_coll_female = "B14002_043",
+        ## Total:!!Enrolled in school:!!Graduate or professional school:
+        total_gra = "B14001_009", total_gra_male="B14002_022", total_gra_female = "B14002_046",
+        
+        # enroll school by poverty level 
+        ## Estimate!!Total:!!Income in the past 12 months below the poverty level:!!Enrolled in school:!!Enrolled in college undergraduate years or /graduate or professional school:
+        under_pover_coll = "B14006_009", under_pover_gra = "B14006_010",
+        ## Estimate!!Total:!!Income in the past 12 months at or above the poverty level:!!Enrolled in school:!!Enrolled in college undergraduate years or /graduate or professional school:
+        above_pover_coll = "B14006_019", above_pover_gra = "B14006_020"
+)
+
+vars_2 <- c(# enroll school by race
+        ## white race
+        white_coll = "B14007A_017", white_gra = "B14007A_018",
+        ## black people
+        black_coll = "B14007B_017", black_gra = "B14007B_018",
+        ## indian
+        Amer_Indian_coll= "B14007C_017", Amer_Indian_gra = "B14007C_018",
+        ## asian
+        asian_coll = "B14007D_017", asian_gra = "B14007D_018",
+        ## NATIVE HAWAIIAN AND OTHER PACIFIC ISLANDER ALONE
+        hawa_coll= "B14007E_017", hawa_gra= "B14007E_018",
+        ## other race 
+        other_race_coll = "B14007F_017", other_race_gra = "B14007F_018")
+
+# choose all the state and select the variables
+all_states_19_1 <- get_acs(geography = "state", 
+                      variables = vars, 
+                      year = 2019, 
+                      geometry = TRUE,
+                      survey = "acs1",
+                      output = "wide")
+all_states_19_2 <- get_acs(geography = "state", 
+                      variables = vars_2, 
+                      year = 2019, 
+                      geometry = TRUE,
+                      survey = "acs1",
+                      output = "wide")
+all_states_18_1 <- get_acs(geography = "state", 
+                      variables = vars, 
+                      year = 2018, 
+                      geometry = TRUE,
+                      survey = "acs1",
+                      output = "wide")
+all_states_18_2 <- get_acs(geography = "state", 
+                      variables = vars_2, 
+                      year = 2018, 
+                      geometry = TRUE,
+                      survey = "acs1",
+                      output = "wide")
+
+all_states_17_1 <- get_acs(geography = "state", 
+                      variables = vars, 
+                      year = 2017, 
+                      geometry = TRUE,
+                      survey = "acs1",
+                      output = "wide")
+all_states_17_2 <- get_acs(geography = "state", 
+                      variables = vars_2, 
+                      year = 2017, 
+                      geometry = TRUE,
+                      survey = "acs1",
+                      output = "wide")
+
+all_states_16_1 <- get_acs(geography = "state", 
+                      variables = vars, 
+                      year = 2016, 
+                      geometry = TRUE,
+                      survey = "acs1",
+                      output = "wide")
+all_states_16_2 <- get_acs(geography = "state", 
+                      variables = vars_2, 
+                      year = 2016, 
+                      geometry = TRUE,
+                      survey = "acs1",
+                      output = "wide")
 
 ```
+
+
+save the dataset, first test if a directory named `data` exists locally, and then save the data.
+
+```{r}
+# Check if the "data" directory exists
+if (!dir.exists("data")) {
+  # If it doesn't exist, create it
+  dir.create("data")
+}
+
+# save the data
+# 2019
+df19_edu_file_path <- "data/df19_edu_1.csv"
+if (!file.exists(df19_edu_file_path)) {
+  write.csv(all_states_19_1, df19_edu_file_path, row.names = FALSE)
+}
+df19_edu_file_path <- "data/df19_edu_2.csv" # race and education
+if (!file.exists(df19_edu_file_path)) {
+  write.csv(all_states_19_2, df19_edu_file_path, row.names = FALSE)
+}
+# 2018
+df18_edu_file_path <- "data/df18_edu_1.csv"
+if (!file.exists(df18_edu_file_path)) {
+  write.csv(all_states_18_1, df18_edu_file_path, row.names = FALSE)
+}
+df18_edu_file_path <- "data/df18_edu_2.csv"
+if (!file.exists(df18_edu_file_path)) {
+  write.csv(all_states_18_2, df18_edu_file_path, row.names = FALSE)
+}
+# 2017
+df17_edu_file_path <- "data/df17_edu_1.csv"
+if (!file.exists(df17_edu_file_path)) {
+  write.csv(all_states_17_1, df17_edu_file_path, row.names = FALSE)
+}
+df17_edu_file_path <- "data/df17_edu_2.csv"
+if (!file.exists(df17_edu_file_path)) {
+  write.csv(all_states_17_2, df17_edu_file_path, row.names = FALSE)
+}
+# 2016
+df16_edu_file_path <- "data/df16_edu_1.csv"
+if (!file.exists(df16_edu_file_path)) {
+  write.csv(all_states_16_1, df16_edu_file_path, row.names = FALSE)
+}
+df16_edu_file_path <- "data/df16_edu_2.csv"
+if (!file.exists(df16_edu_file_path)) {
+  write.csv(all_states_16_2, df16_edu_file_path, row.names = FALSE)
+}
+
+# read the data for future usage
+df19_edu_file_path <- "data/df19_edu_1.csv"
+# df_19_1 <- read.csv(df19_edu_file_path, header = FALSE)
+# df_19_2 <- read.csv(df19_edu_file_path, header = FALSE)
+# .....
+
+df_19_1 <- all_states_19_1
+df_19_2 <- all_states_19_2
+df_18_1 <- all_states_18_1
+df_18_2 <- all_states_18_2
+df_17_1 <- all_states_17_1
+df_17_2 <- all_states_17_2
+df_16_1 <- all_states_16_1
+df_16_2 <- all_states_16_2
+```
+
+
+
+
+
+
+
