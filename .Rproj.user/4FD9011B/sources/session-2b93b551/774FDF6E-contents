@@ -1,17 +1,23 @@
 ---
-title: "Untitled"
+title: "project 4"
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
     vertical_layout: fill
+runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
+library(ggplot2)
+library(dplyr)
+library(tidyverse)
+library(DT)
+library(shiny)
 ```
+# new page1 {data-orientation=columns}
 
-Column {data-width=650}
------------------------------------------------------------------------
+## Column {data-width=650}
 
 ### Chart A
 
@@ -19,8 +25,7 @@ Column {data-width=650}
 
 ```
 
-Column {data-width=350}
------------------------------------------------------------------------
+## Column {data-width=350} {.tabset} 
 
 ### Chart B
 
@@ -34,3 +39,9 @@ Column {data-width=350}
 
 ```
 
+# new page2 {data-orientation=columns}
+
+## column 1 {.sidebar}
+
+yuan
+weihang

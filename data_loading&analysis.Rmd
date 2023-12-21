@@ -1,0 +1,74 @@
+---
+title: "data_loading"
+author: "Yuan Gao"
+date: "2023-12-15"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+this file is used to load and save the original data I got from [tidycensus](https://walker-data.com/tidycensus), which is a datasets i used in my project 3 assignment. 
+
+## Data search and loading
+
+```{r}
+library(tidycensus)
+library(tidyverse)
+library(dplyr)
+library(tidyr)
+library(stringr)
+library(ggplot2)
+library(tigris)
+library(sf)
+```
+
+```{r}
+census_api_key("ef8220c60723bd563afc06a143779defcea2413a")
+```
+
+- check and select the data
+```{r}
+# check the variable
+v19 <- load_variables(2019, "acs5", cache = TRUE)
+v19_acs1 <- load_variables(2019, "acs1", cache = TRUE)
+v18 <- load_variables(2018, "acs5", cache = TRUE)
+v18_acs1 <- load_variables(2018, "acs1", cache = TRUE)
+v17 <- load_variables(2017, "acs5", cache = TRUE)
+v17_acs1 <- load_variables(2017, "acs1", cache = TRUE)
+
+# state level variables
+vars <- c(
+        # sex
+        male = "B98012_002", female = "B98012_003",
+        # enroll school
+        less_high = "B26106_027", high = "B26106_028",
+        some_coll = "B26106_029", bache = "B26106_030",
+        # marital status
+        no_mar = "B26104_002", mar = "B26104_003", 
+        divorce = "B26104_006", Widowed = "B26104_005",
+        # median earning for the past 12 months 
+        med_earn = "B26119_001", 
+        m_med_earn = "B26119_002", f_med_earn = "B26119_003"
+          )
+# select the variables
+df19_edu <- get_acs(geography = "state", 
+                       variables = vars,
+                       year = 2019,
+                       sumfile = "dhc",
+                       output = "wide")
+df18_edu <- get_acs(geography = "state", 
+                       variables = vars,
+                       year = 2018,
+                       sumfile = "dhc",
+                       output = "wide")
+df17_edu <- get_acs(geography = "state", 
+                       variables = vars,
+                       year = 2017,
+                       sumfile = "dhc",
+                       output = "wide")
+
+```
