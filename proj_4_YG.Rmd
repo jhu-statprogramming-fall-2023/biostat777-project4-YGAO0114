@@ -320,3 +320,55 @@ tableOutput("degreeTable2")
 # Analysis {data-orientation=columns}
 
 ## column 1 {.sidebar}
+
+Summary
+
+## column 2 {.tabset}
+### 4-year Bachelor Degree Enrollment
+```{r}
+df_selected_years <- combined_df[combined_df$year %in% c(2016, 2017, 2018, 2019), ]
+df_selected_years <- df_selected_years[with(df_selected_years, order(year, -Bachelor_degreeE)), ]
+ggplot(df_selected_years, aes(x = reorder(NAME, -Bachelor_degreeE), y = Bachelor_degreeE, fill = factor(year))) +
+  geom_bar(stat = "identity") +
+  facet_grid(year ~ ., scales = "free_x") +  # Allowing individual x-axis labels for each plot
+  scale_fill_brewer(palette = "Set1", name = "Year") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 6)) +  # Smaller state labels
+  labs(x = "State", y = "Bachelor Degree Enrollment", title = "Bachelor Degree Enrollment by State (2016-2019)")
+```
+
+### 4-year Master Degree Enrollment
+```{r}
+df_selected_years <- combined_df[combined_df$year %in% c(2016, 2017, 2018, 2019), ]
+df_selected_years <- df_selected_years[with(df_selected_years, order(year, -Master_degreeE)), ]
+ggplot(df_selected_years, aes(x = reorder(NAME, -Master_degreeE), y = Master_degreeE, fill = factor(year))) +
+  geom_bar(stat = "identity") +
+  facet_grid(year ~ ., scales = "free_x") +  # Allowing individual x-axis labels for each plot
+  scale_fill_brewer(palette = "Set1", name = "Year") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 6)) +  # Smaller state labels
+  labs(x = "State", y = "Master Degree Enrollment", title = "Master Degree Enrollment by State (2016-2019)")
+```
+
+### 4-year Doctorate Degree Enrollment
+```{r}
+df_selected_years <- combined_df[combined_df$year %in% c(2016, 2017, 2018, 2019), ]
+df_selected_years <- df_selected_years[with(df_selected_years, order(year, -Doctorate_degreeE)), ]
+ggplot(df_selected_years, aes(x = reorder(NAME, -Doctorate_degreeE), y = Master_degreeE, fill = factor(year))) +
+  geom_bar(stat = "identity") +
+  facet_grid(year ~ ., scales = "free_x") +  # Allowing individual x-axis labels for each plot
+  scale_fill_brewer(palette = "Set1", name = "Year") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 6)) +  # Smaller state labels
+  labs(x = "State", y = "Doctorate Degree Enrollment", title = "Doctorate Degree Enrollment by State (2016-2019)")
+```
+
+## column 3 {.tabset}
+### 4-year Median Earning
+```{r}
+df_selected_years <- combined_df[combined_df$year %in% c(2016, 2017, 2018, 2019), ]
+df_selected_years <- df_selected_years[with(df_selected_years, order(year, -med_earnE)), ]
+ggplot(df_selected_years, aes(x = reorder(NAME, -med_earnE), y = med_earnE, fill = factor(year))) +
+  geom_bar(stat = "identity") +
+  facet_grid(year ~ ., scales = "free_x") +  # Allowing individual x-axis labels for each plot
+  scale_fill_brewer(palette = "Set1", name = "Year") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 6)) +  # Smaller state labels
+  labs(x = "State", y = "Median Earning", title = "Median Earning by State (2016-2019)")
+```
