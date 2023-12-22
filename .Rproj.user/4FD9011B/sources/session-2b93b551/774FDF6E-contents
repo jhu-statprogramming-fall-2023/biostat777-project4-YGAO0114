@@ -35,7 +35,7 @@ combined_df <- rbind(df16, df17, df18, df19)
 ```
 
 
-# About {data-orientation=rows}
+# About {data-orientation=columns}
 ## column
 ### Data 
 Part 1: Identify the data
@@ -55,6 +55,10 @@ This dashboard is designed to analyze the annual trends in median earnings and h
 
 ##  Column
 ### YouTube Vedio
+
+<iframe width="640" height="360" src="https://www.youtube.com/embed/Dlq8U0boqq4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
 
 # The Data {data-orientation=rows}
 
@@ -332,7 +336,7 @@ tableOutput("degreeTable2")
 
 Summary
 
-Between 2016 and 2019, there was a notable upward trend in higher education enrollment across all states, accompanied by an increase in median earnings. Notably, California stood out with the highest median earnings and the most significant increase in higher education enrollment, specifically in the population attaining a bachelor's degree or higher. 
+Between 2016 and 2019, there was a notable upward trend in higher education enrollment across all states, accompanied by an increase in median earnings. Notably, California stood out with the highest higher education enrollment, specifically in the population attaining a bachelor's degree or higher. And the District of Columbia has the relatively higher median earnings across 4 years.
 
 Additionally, coastal states, in general, were more likely to exhibit higher median earnings and greater levels of education enrollment. Furthermore, it was observed that states with higher median earnings typically also experienced higher rates of higher education enrollment
 
