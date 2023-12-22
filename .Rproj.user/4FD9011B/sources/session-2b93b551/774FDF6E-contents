@@ -35,10 +35,8 @@ combined_df <- rbind(df16, df17, df18, df19)
 ```
 
 
-# About 
-
-## column {data-orientation=rows}
-
+# About {data-orientation=rows}
+## column
 ### Data 
 Part 1: Identify the data
 
@@ -51,10 +49,21 @@ Part 1: Identify the data
 
 
 ### Purpose of this dashboard
-This dashboard investigates the yearly change of median earning and enrollment in high education
+
+This dashboard is designed to analyze the annual trends in median earnings and higher education enrollment across all states in the United States from 2016 to 2019. It aims to provide a comprehensive overview of the evolving landscape of educational attainment and income levels during this period, offering insights into the nationwide patterns and variations in these key socio-economic indicators.
+
+
+##  Column
+### YouTube Vedio
 
 # The Data {data-orientation=rows}
+
+## Column {data-width = 200}
+
+The data is from [tidycensus](https://walker-data.com/tidycensus/articles/spatial-data.html). The selected data from the TidyCensus package for my study provides a brief view of state-level socio-economic variables in the United States, focusing on the years from 2016 to 2019. The dataset includes key metrics such as median earnings over the past 12 months, disaggregated by gender (male and female median earnings). Additionally, it encompasses various levels of higher educational attainment, including Associate degrees, Bachelor's degrees, Master's degrees, Professional school degrees, and Doctorate degrees. This dataset, sourced from the American Community Survey (ACS), is instrumental in analyzing trends and correlations between income levels and educational qualifications across all states. By employing the `get_acs` function with specified variables, years, and state-level geography, the dataset ensures detailed insights into these crucial socio-economic indicators, providing a foundation for in-depth analysis of educational and income disparities and trends across the United States.
+
 ## Column 
+
 ```{r}
 DT::renderDataTable({
   DT::datatable(combined_df,
@@ -322,6 +331,11 @@ tableOutput("degreeTable2")
 ## column 1 {.sidebar}
 
 Summary
+
+Between 2016 and 2019, there was a notable upward trend in higher education enrollment across all states, accompanied by an increase in median earnings. Notably, California stood out with the highest median earnings and the most significant increase in higher education enrollment, specifically in the population attaining a bachelor's degree or higher. 
+
+Additionally, coastal states, in general, were more likely to exhibit higher median earnings and greater levels of education enrollment. Furthermore, it was observed that states with higher median earnings typically also experienced higher rates of higher education enrollment
+
 
 ## column 2 {.tabset}
 ### 4-year Bachelor Degree Enrollment
