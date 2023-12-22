@@ -35,7 +35,6 @@ combined_df <- rbind(df16, df17, df18, df19)
 ```
 
 
-
 # About 
 
 ## column {data-orientation=rows}
@@ -77,7 +76,7 @@ DT::renderDataTable({
 
 
 
-# median earning {data-orientation=columns}
+# Median Earning {data-orientation=columns}
 
 ## Column {data-width=100}
 
@@ -126,6 +125,197 @@ See the [plotting code on GitHub](https://github.com/jhu-statprogramming-fall-20
 ![](plots/Undergra_grad_Enroll_map_2016.png){width=1000px}
 
 # Yearly Change
+## column 1 {.sidebar}
+### 
+```{r}
+# Input for selecting multiple years
+selectInput("yearInput",
+            "Select Year(s):",
+            choices = unique(combined_df$year),
+            multiple = TRUE,
+            selected = unique(combined_df$year))
+
+# Input for selecting the state (NAME)
+selectInput("stateInput", 
+            "Select State(s):", 
+            choices = unique(combined_df$NAME),
+            multiple = TRUE,
+            selected = c("California", "Maryland"))
+
+```
+
+## High level Education {.tabset}
+
+### Bachelor Degree
+
+```{r}
+# Render Plot based on selections
+output$myPlot0 <- renderPlot({
+  input_data <- combined_df %>%
+    filter(year %in% input$yearInput, NAME %in% input$stateInput)  # Adjust for multiple states
+  
+  # Adjusted plot
+  ggplot(input_data, aes(x = factor(NAME), y = Bachelor_degreeE, fill = factor(year))) + 
+    geom_bar(stat = "identity", position = "dodge") +
+    theme_minimal() +
+    labs(title = "Bachelor Degree Enrollment by Year and State",
+         x = "State",
+         y = "Enrollment",
+         fill = "Year")
+})
+
+# Show the plot
+plotOutput("myPlot0")
+```
+
+### Master Degree
+
+```{r}
+# Render Plot based on selections
+output$myPlot1 <- renderPlot({
+  input_data <- combined_df %>%
+    filter(year %in% input$yearInput, NAME %in% input$stateInput)  # Adjust for multiple states
+  
+  # Adjusted plot
+  ggplot(input_data, aes(x = factor(NAME), y = Master_degreeE, fill = factor(year))) + 
+    geom_bar(stat = "identity", position = "dodge") +
+    theme_minimal() +
+    labs(title = "Bachelor Degree Enrollment by Year and State",
+         x = "State",
+         y = "Enrollment",
+         fill = "Year")
+})
+
+# Show the plot
+plotOutput("myPlot1")
+```
+
+### Doctorate Degree
+
+```{r}
+# Render Plot based on selections
+output$myPlot2 <- renderPlot({
+  input_data <- combined_df %>%
+    filter(year %in% input$yearInput, NAME %in% input$stateInput)  # Adjust for multiple states
+  
+  # Adjusted plot
+  ggplot(input_data, aes(x = factor(NAME), y = Doctorate_degreeE, fill = factor(year))) + 
+    geom_bar(stat = "identity", position = "dodge") +
+    theme_minimal() +
+    labs(title = "Bachelor Degree Enrollment by Year and State",
+         x = "State",
+         y = "Enrollment",
+         fill = "Year")
+})
+
+# Show the plot
+plotOutput("myPlot2")
+```
+
+### Professional School Degree
+
+```{r}
+# Render Plot based on selections
+output$myPlot3 <- renderPlot({
+  input_data <- combined_df %>%
+    filter(year %in% input$yearInput, NAME %in% input$stateInput)  # Adjust for multiple states
+  
+  # Adjusted plot
+  ggplot(input_data, aes(x = factor(NAME), y = Professional_school_degreeE, fill = factor(year))) + 
+    geom_bar(stat = "identity", position = "dodge") +
+    theme_minimal() +
+    labs(title = "Bachelor Degree Enrollment by Year and State",
+         x = "State",
+         y = "Enrollment",
+         fill = "Year")
+})
+
+# Show the plot
+plotOutput("myPlot3")
+```
+
+
+
+# Income&Education{data-orientation=columns}
+
+## Top 10 States by Median Income
+### Top 10 States by Median Income
+```{r}
+
+# Input for selecting the year
+selectInput("incomeYearInput", 
+            "Select Year:", 
+            choices = unique(combined_df$year))
+
+# Render the table for median income
+output$incomeTable <- renderTable({
+  top_income_data <- combined_df %>%
+    filter(year == input$incomeYearInput) %>%
+    arrange(desc(med_earnE)) %>%
+    head(10)
+
+  top_income_data[, c("NAME", "med_earnE")]
+})
+
+tableOutput("incomeTable")
+
+
+```
+
+## Top 10 States by Degree Enrollment {.tabset}
+### Top 10 States by Bachelor Degree Enrollment
+```{r}
+selectInput("degreeYearInput", 
+            "Select Year:", 
+            choices = unique(combined_df$year))
+
+output$degreeTable <- renderTable({
+  selected_year <- input$degreeYearInput
+  top_degree_data <- combined_df %>%
+    filter(year == selected_year) %>%
+    arrange(desc(Bachelor_degreeE)) %>%
+    head(10)
+
+  top_degree_data[, c("NAME", "Bachelor_degreeE")]
+})
+tableOutput("degreeTable")
+```
+
+### Top 10 States by Master Degree Enrollment
+```{r}
+selectInput("degreeYearInput", 
+            "Select Year:", 
+            choices = unique(combined_df$year))
+
+output$degreeTable1 <- renderTable({
+  selected_year <- input$degreeYearInput
+  top_degree_data <- combined_df %>%
+    filter(year == selected_year) %>%
+    arrange(desc(Master_degreeE)) %>%
+    head(10)
+
+  top_degree_data[, c("NAME", "Master_degreeE")]
+})
+tableOutput("degreeTable1")
+```
+
+### Top 10 States by Doctorate Degree Enrollment
+```{r}
+selectInput("degreeYearInput", 
+            "Select Year:", 
+            choices = unique(combined_df$year))
+
+output$degreeTable2 <- renderTable({
+  selected_year <- input$degreeYearInput
+  top_degree_data <- combined_df %>%
+    filter(year == selected_year) %>%
+    arrange(desc(Doctorate_degreeE)) %>%
+    head(10)
+
+  top_degree_data[, c("NAME", "Doctorate_degreeE")]
+})
+tableOutput("degreeTable2")
+```
 
 # Analysis {data-orientation=columns}
 
