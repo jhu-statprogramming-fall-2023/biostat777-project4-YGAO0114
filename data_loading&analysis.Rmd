@@ -617,10 +617,196 @@ main_plot +
 ggsave("plots/Undergra_grad_Enroll_map_2019.png", width = 10, height = 6, units = "in")
 ```
 
+```{r 2018_college_enrollment, fig.width=7, fig.height=5, eval = FALSE}
+df_18_1$sum_enroll <- df_18_1$total_collE + df_18_1$total_graE
+df_main <- subset(df_18_1, !NAME %in% c("Alaska", "Hawaii"))
+df_alaska <- subset(df_18_1, NAME == "Alaska")
+df_hawaii <- subset(df_18_1, NAME == "Hawaii")
+
+# Create the main plot
+main_plot <- ggplot(df_main, aes(fill = sum_enroll)) +
+  geom_sf(alpha = 0.8) +
+  geom_sf_text(aes(label = NAME), size = 2, check_overlap = TRUE) +
+  scale_fill_viridis_c(option = "D", direction = -1, labels = dollar) +
+  labs(
+    title = "2018 U.S. Statewise Enrollment in Higher Education: \nA Geographic Overview",
+    caption = "Data source: ACS state data 2018\nVisualization created using R",
+    fill = "Undergrad&Grad Enrollment",
+    x = "Longitude",
+    y = "Latitude"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    plot.subtitle = element_text(size = 12),
+    plot.caption = element_text(size = 8, hjust = 0),
+    legend.position = "bottom",
+    legend.title.align = 0.5,
+    legend.background = element_rect(fill = "gray90", colour = NA),
+    legend.key.width = unit(1.5, "cm"),
+    text = element_text(size = 5),
+    axis.title.x = element_text(size = 10),
+    axis.title.y = element_text(size = 10)
+  ) +
+  coord_sf(xlim = c(-135, -60), ylim = c(25, 50), datum = NA)
+
+# Create the Alaska plot
+alaska_plot <- ggplot(df_alaska, aes(fill = sum_enroll)) +
+  geom_sf(alpha = 0.8) +
+  geom_sf_text(aes(label = NAME), size = 2) +
+  scale_fill_viridis_c(option = "D", direction = -1, labels = dollar) +
+  theme_void() +
+  theme(legend.position = "none") +
+  coord_sf(datum = NA)
+
+# Create the Hawaii plot
+hawaii_plot <- ggplot(df_hawaii, aes(fill = sum_enroll)) +
+  geom_sf(alpha = 0.8) +
+  geom_sf_text(aes(label = NAME), size = 2) +
+  scale_fill_viridis_c(option = "D", direction = -1, labels = dollar) +
+  theme_void() +
+  theme(legend.position = "none") +
+  coord_sf(datum = NA)
+
+# Create grobs from the Alaska and Hawaii plots
+alaska_grob <- ggplotGrob(alaska_plot)
+hawaii_grob <- ggplotGrob(hawaii_plot)
+
+# Add Alaska and Hawaii as insets to the main plot
+main_plot + 
+  annotation_custom(grob = alaska_grob, xmin = -135, xmax = -100, ymin = 15, ymax = 45) +
+  annotation_custom(grob = hawaii_grob, xmin = -110, xmax = -85, ymin = 20, ymax = 30)
+
+ggsave("plots/Undergra_grad_Enroll_map_2018.png", width = 10, height = 6, units = "in")
+
+```
+
+```{r 2017_college_enrollment, fig.width=7, fig.height=5, eval = FALSE}
+df_17_1$sum_enroll <- df_17_1$total_collE + df_17_1$total_graE
+df_main <- subset(df_17_1, !NAME %in% c("Alaska", "Hawaii"))
+df_alaska <- subset(df_17_1, NAME == "Alaska")
+df_hawaii <- subset(df_17_1, NAME == "Hawaii")
+
+# Create the main plot
+main_plot <- ggplot(df_main, aes(fill = sum_enroll)) +
+  geom_sf(alpha = 0.8) +
+  geom_sf_text(aes(label = NAME), size = 2, check_overlap = TRUE) +
+  scale_fill_viridis_c(option = "D", direction = -1, labels = dollar) +
+  labs(
+    title = "2017 U.S. Statewise Enrollment in Higher Education: \nA Geographic Overview",
+    caption = "Data source: ACS state data 2017\nVisualization created using R",
+    fill = "Undergrad&Grad Enrollment",
+    x = "Longitude",
+    y = "Latitude"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    plot.subtitle = element_text(size = 12),
+    plot.caption = element_text(size = 8, hjust = 0),
+    legend.position = "bottom",
+    legend.title.align = 0.5,
+    legend.background = element_rect(fill = "gray90", colour = NA),
+    legend.key.width = unit(1.5, "cm"),
+    text = element_text(size = 5),
+    axis.title.x = element_text(size = 10),
+    axis.title.y = element_text(size = 10)
+  ) +
+  coord_sf(xlim = c(-135, -60), ylim = c(25, 50), datum = NA)
+
+# Create the Alaska plot
+alaska_plot <- ggplot(df_alaska, aes(fill = sum_enroll)) +
+  geom_sf(alpha = 0.8) +
+  geom_sf_text(aes(label = NAME), size = 2) +
+  scale_fill_viridis_c(option = "D", direction = -1, labels = dollar) +
+  theme_void() +
+  theme(legend.position = "none") +
+  coord_sf(datum = NA)
+
+# Create the Hawaii plot
+hawaii_plot <- ggplot(df_hawaii, aes(fill = sum_enroll)) +
+  geom_sf(alpha = 0.8) +
+  geom_sf_text(aes(label = NAME), size = 2) +
+  scale_fill_viridis_c(option = "D", direction = -1, labels = dollar) +
+  theme_void() +
+  theme(legend.position = "none") +
+  coord_sf(datum = NA)
+
+# Create grobs from the Alaska and Hawaii plots
+alaska_grob <- ggplotGrob(alaska_plot)
+hawaii_grob <- ggplotGrob(hawaii_plot)
+
+# Add Alaska and Hawaii as insets to the main plot
+main_plot + 
+  annotation_custom(grob = alaska_grob, xmin = -135, xmax = -100, ymin = 15, ymax = 45) +
+  annotation_custom(grob = hawaii_grob, xmin = -110, xmax = -85, ymin = 20, ymax = 30)
+
+ggsave("plots/Undergra_grad_Enroll_map_2017.png", width = 10, height = 6, units = "in")
+
+```
 
 
+```{r 2016_college_enrollment, fig.width=7, fig.height=5, eval = FALSE}
+df_16_1$sum_enroll <- df_16_1$total_collE + df_16_1$total_graE
+df_main <- subset(df_16_1, !NAME %in% c("Alaska", "Hawaii"))
+df_alaska <- subset(df_16_1, NAME == "Alaska")
+df_hawaii <- subset(df_16_1, NAME == "Hawaii")
 
+# Create the main plot
+main_plot <- ggplot(df_main, aes(fill = sum_enroll)) +
+  geom_sf(alpha = 0.8) +
+  geom_sf_text(aes(label = NAME), size = 2, check_overlap = TRUE) +
+  scale_fill_viridis_c(option = "D", direction = -1, labels = dollar) +
+  labs(
+    title = "2016 U.S. Statewise Enrollment in Higher Education: \nA Geographic Overview",
+    caption = "Data source: ACS state data 2016\nVisualization created using R",
+    fill = "Undergrad&Grad Enrollment",
+    x = "Longitude",
+    y = "Latitude"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    plot.subtitle = element_text(size = 12),
+    plot.caption = element_text(size = 8, hjust = 0),
+    legend.position = "bottom",
+    legend.title.align = 0.5,
+    legend.background = element_rect(fill = "gray90", colour = NA),
+    legend.key.width = unit(1.5, "cm"),
+    text = element_text(size = 5),
+    axis.title.x = element_text(size = 10),
+    axis.title.y = element_text(size = 10)
+  ) +
+  coord_sf(xlim = c(-135, -60), ylim = c(25, 50), datum = NA)
 
+# Create the Alaska plot
+alaska_plot <- ggplot(df_alaska, aes(fill = sum_enroll)) +
+  geom_sf(alpha = 0.8) +
+  geom_sf_text(aes(label = NAME), size = 2) +
+  scale_fill_viridis_c(option = "D", direction = -1, labels = dollar) +
+  theme_void() +
+  theme(legend.position = "none") +
+  coord_sf(datum = NA)
 
+# Create the Hawaii plot
+hawaii_plot <- ggplot(df_hawaii, aes(fill = sum_enroll)) +
+  geom_sf(alpha = 0.8) +
+  geom_sf_text(aes(label = NAME), size = 2) +
+  scale_fill_viridis_c(option = "D", direction = -1, labels = dollar) +
+  theme_void() +
+  theme(legend.position = "none") +
+  coord_sf(datum = NA)
 
+# Create grobs from the Alaska and Hawaii plots
+alaska_grob <- ggplotGrob(alaska_plot)
+hawaii_grob <- ggplotGrob(hawaii_plot)
+
+# Add Alaska and Hawaii as insets to the main plot
+main_plot + 
+  annotation_custom(grob = alaska_grob, xmin = -135, xmax = -100, ymin = 15, ymax = 45) +
+  annotation_custom(grob = hawaii_grob, xmin = -110, xmax = -85, ymin = 20, ymax = 30)
+
+ggsave("plots/Undergra_grad_Enroll_map_2016.png", width = 10, height = 6, units = "in")
+
+```
 

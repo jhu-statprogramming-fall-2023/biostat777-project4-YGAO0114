@@ -65,12 +65,28 @@ See the [plotting code on GitHub](https://github.com/jhu-statprogramming-fall-20
 
 # Higher Education Enrollment {data-orientation=columns}
 
+## Column {data-width=100}
+
+### About This Page
+This page shows the enrollment in higher education (equal or higher than undergraduate) from 2016 to 2019. You can check different years by clicking the tab.
+
+### Code
+See the [plotting code on GitHub](https://github.com/jhu-statprogramming-fall-2023/biostat777-project4-YGAO0114/blob/main/data_loading%26analysis.Rmd).
+
 ## Column {data-width=250} {.tabset}
 ### Enrollment in Higher Education 2019
 
 ![](plots/Undergra_grad_Enroll_map_2019.png){width=1000px}
 
 ### 2018
+![](plots/Undergra_grad_Enroll_map_2018.png){width=1000px}
+
+### 2017
+![](plots/Undergra_grad_Enroll_map_2017.png){width=1000px}
+
+### 2016
+
+![](plots/Undergra_grad_Enroll_map_2016.png){width=1000px}
 
 # Analysis {data-orientation=columns}
 
