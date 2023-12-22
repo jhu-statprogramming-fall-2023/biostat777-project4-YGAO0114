@@ -22,15 +22,18 @@ library(dplyr)
 library(tidyr)
 library(stringr)
 library(ggplot2)
+library(viridis)
+library(grid)
 library(tigris)
 library(sf)
+library(scales)
 ```
 
 ```{r}
 census_api_key("ef8220c60723bd563afc06a143779defcea2413a")
 ```
 
-- check and select the data
+- check and select the variables
 ```{r}
 # check the variable
 v19 <- load_variables(2019, "acs5", cache = TRUE) # 2015-2019
@@ -141,7 +144,7 @@ all_states_16_2 <- get_acs(geography = "state",
 ```
 
 
-save the dataset, first test if a directory named `data` exists locally, and then save the data.
+- save the dataset, first test if a directory named `data` exists locally, and then save the data.
 
 ```{r}
 # Check if the "data" directory exists
@@ -150,7 +153,7 @@ if (!dir.exists("data")) {
   dir.create("data")
 }
 
-# save the data
+# save the original data
 # 2019
 df19_edu_file_path <- "data/df19_edu_1.csv"
 if (!file.exists(df19_edu_file_path)) {
@@ -188,7 +191,7 @@ if (!file.exists(df16_edu_file_path)) {
   write.csv(all_states_16_2, df16_edu_file_path, row.names = FALSE)
 }
 
-# read the data for future usage
+# Read in the data locally each time knit/render.
 df19_edu_file_path <- "data/df19_edu_1.csv"
 # df_19_1 <- read.csv(df19_edu_file_path, header = FALSE)
 # df_19_2 <- read.csv(df19_edu_file_path, header = FALSE)
@@ -203,6 +206,417 @@ df_17_2 <- all_states_17_2
 df_16_1 <- all_states_16_1
 df_16_2 <- all_states_16_2
 ```
+
+## some data preprocessing and then save the new data after cleaning
+
+```{r}
+# colnames(df_19_1)
+# removes all columns ending with "M" from a data frame using purrr function
+remove_columns_ending_with_M <- function(df) {
+  df %>% select(-ends_with("M"))
+}
+list_of_dfs <- list(df_19_1, df_19_2, df_18_1, df_18_2, df_17_1, df_17_2, df_16_1,df_16_2)
+cleaned_list_of_dfs <- map(list_of_dfs, remove_columns_ending_with_M)
+df19_1 <- cleaned_list_of_dfs[[1]]
+df19_2 <- cleaned_list_of_dfs[[2]]
+df18_1 <- cleaned_list_of_dfs[[3]]
+df18_2 <- cleaned_list_of_dfs[[4]]
+df17_1 <- cleaned_list_of_dfs[[5]]
+df17_2 <- cleaned_list_of_dfs[[6]]
+df16_1 <- cleaned_list_of_dfs[[7]]
+df16_2 <- cleaned_list_of_dfs[[8]]
+
+df19_1$year <- "2019"
+df19_2$year <- "2019"
+df18_1$year <- "2018"
+df18_2$year <- "2018"
+df17_1$year <- "2017"
+df17_2$year <- "2017"
+df16_1$year <- "2016"
+df16_2$year <- "2016"
+
+# if remove the geometry info 
+########### 2019
+df19_1_nogeo <- df19_1
+df19_1_nogeo$geometry <- NULL
+# try to save and read the data for future use
+df19_file_path <- "data/df19_1_nogeo.csv"
+write.csv(df19_1_nogeo, df19_file_path, row.names = FALSE)
+if (!file.exists(df19_file_path)) {
+  write.csv(df19_1_nogeo, df19_file_path, row.names = FALSE)
+}
+df_19_test <- read.csv(df19_file_path, header = TRUE)
+########### 2018
+df18_1_nogeo <- df18_1
+df18_1_nogeo$geometry <- NULL
+# try to save and read the data for future use
+df18_file_path <- "data/df18_1_nogeo.csv"
+write.csv(df18_1_nogeo, df18_file_path, row.names = FALSE)
+if (!file.exists(df18_file_path)) {
+  write.csv(df18_1_nogeo, df18_file_path, row.names = FALSE)
+}
+df_18_test <- read.csv(df18_file_path, header = TRUE)
+########### 2017
+df17_1_nogeo <- df17_1
+df17_1_nogeo$geometry <- NULL
+# try to save and read the data for future use
+df17_file_path <- "data/df17_1_nogeo.csv"
+write.csv(df17_1_nogeo, df17_file_path, row.names = FALSE)
+if (!file.exists(df17_file_path)) {
+  write.csv(df17_1_nogeo, df17_file_path, row.names = FALSE)
+}
+df_17_test <- read.csv(df17_file_path, header = TRUE)
+########### 2016
+df16_1_nogeo <- df16_1
+df16_1_nogeo$geometry <- NULL
+# try to save and read the data for future use
+df16_file_path <- "data/df16_1_nogeo.csv"
+write.csv(df16_1_nogeo, df16_file_path, row.names = FALSE)
+if (!file.exists(df16_file_path)) {
+  write.csv(df16_1_nogeo, df16_file_path, row.names = FALSE)
+}
+df_16_test <- read.csv(df16_file_path, header = TRUE)
+```
+
+if need the geometry information, then use df_19_1 or df19_1; if don't need the geometry information, then use df_19_test.
+
+
+## plot median earning: 
+
+```{r 2019_median_earning, fig.width=7, fig.height=5, eval = FALSE}
+df_main <- subset(df_19_1, !NAME %in% c("Alaska", "Hawaii"))
+df_alaska <- subset(df_19_1, NAME == "Alaska")
+df_hawaii <- subset(df_19_1, NAME == "Hawaii")
+
+# Create the main plot
+main_plot <- ggplot(df_main, aes(fill = med_earnE)) +
+  geom_sf(alpha = 0.8) +
+  geom_sf_text(aes(label = NAME), size = 2, check_overlap = TRUE) +
+  scale_fill_viridis_c(option = "D", direction = -1, labels = dollar) +
+  labs(
+    title = "2019 Median Earning by State in the United States",
+    subtitle = "Visualization of median earnings across different states",
+    caption = "Data source: ACS state data 2019\nVisualization created using R",
+    fill = "Median Earning",
+    x = "Longitude",
+    y = "Latitude"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    plot.subtitle = element_text(size = 12),
+    plot.caption = element_text(size = 8, hjust = 0),
+    legend.position = "bottom",
+    legend.title.align = 0.5,
+    legend.background = element_rect(fill = "gray90", colour = NA),
+    legend.key.width = unit(1.5, "cm"),
+    text = element_text(size = 5),
+    axis.title.x = element_text(size = 10),
+    axis.title.y = element_text(size = 10)
+  ) +
+  coord_sf(xlim = c(-135, -60), ylim = c(25, 50), datum = NA)
+
+# Create the Alaska plot
+alaska_plot <- ggplot(df_alaska, aes(fill = med_earnE)) +
+  geom_sf(alpha = 0.8) +
+  geom_sf_text(aes(label = NAME), size = 2) +
+  scale_fill_viridis_c(option = "D", direction = -1, labels = dollar) +
+  theme_void() +
+  theme(legend.position = "none") +
+  coord_sf(datum = NA)
+
+# Create the Hawaii plot
+hawaii_plot <- ggplot(df_hawaii, aes(fill = med_earnE)) +
+  geom_sf(alpha = 0.8) +
+  geom_sf_text(aes(label = NAME), size = 2) +
+  scale_fill_viridis_c(option = "D", direction = -1, labels = dollar) +
+  theme_void() +
+  theme(legend.position = "none") +
+  coord_sf(datum = NA)
+
+# Create grobs from the Alaska and Hawaii plots
+alaska_grob <- ggplotGrob(alaska_plot)
+hawaii_grob <- ggplotGrob(hawaii_plot)
+
+# Add Alaska and Hawaii as insets to the main plot
+main_plot + 
+  annotation_custom(grob = alaska_grob, xmin = -135, xmax = -100, ymin = 15, ymax = 45) +
+  annotation_custom(grob = hawaii_grob, xmin = -110, xmax = -85, ymin = 20, ymax = 30)
+
+# Save or view the plot
+if (!dir.exists("plots")) {
+  # If it doesn't exist, create it
+  dir.create("plots")
+}
+ggsave("plots/median_earning_map_2019.png", width = 10, height = 6, units = "in")
+```
+
+```{r 2018_median_earning, fig.width=7, fig.height=5, eval = FALSE}
+df_main <- subset(df_18_1, !NAME %in% c("Alaska", "Hawaii"))
+df_alaska <- subset(df_18_1, NAME == "Alaska")
+df_hawaii <- subset(df_18_1, NAME == "Hawaii")
+
+# Create the main plot
+main_plot <- ggplot(df_main, aes(fill = med_earnE)) +
+  geom_sf(alpha = 0.8) +
+  geom_sf_text(aes(label = NAME), size = 2, check_overlap = TRUE) +
+  scale_fill_viridis_c(option = "D", direction = -1, labels = dollar) +
+  labs(
+    title = "2018 Median Earning by State in the United States",
+    subtitle = "Visualization of median earnings across different states",
+    caption = "Data source: ACS state data 2018\nVisualization created using R",
+    fill = "Median Earning",
+    x = "Longitude",
+    y = "Latitude"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    plot.subtitle = element_text(size = 12),
+    plot.caption = element_text(size = 8, hjust = 0),
+    legend.position = "bottom",
+    legend.title.align = 0.5,
+    legend.background = element_rect(fill = "gray90", colour = NA),
+    legend.key.width = unit(1.5, "cm"),
+    text = element_text(size = 5),
+    axis.title.x = element_text(size = 10),
+    axis.title.y = element_text(size = 10)
+  ) +
+  coord_sf(xlim = c(-135, -60), ylim = c(25, 50), datum = NA)
+
+# Create the Alaska plot
+alaska_plot <- ggplot(df_alaska, aes(fill = med_earnE)) +
+  geom_sf(alpha = 0.8) +
+  geom_sf_text(aes(label = NAME), size = 2) +
+  scale_fill_viridis_c(option = "D", direction = -1, labels = dollar) +
+  theme_void() +
+  theme(legend.position = "none") +
+  coord_sf(datum = NA)
+
+# Create the Hawaii plot
+hawaii_plot <- ggplot(df_hawaii, aes(fill = med_earnE)) +
+  geom_sf(alpha = 0.8) +
+  geom_sf_text(aes(label = NAME), size = 2) +
+  scale_fill_viridis_c(option = "D", direction = -1, labels = dollar) +
+  theme_void() +
+  theme(legend.position = "none") +
+  coord_sf(datum = NA)
+
+# Create grobs from the Alaska and Hawaii plots
+alaska_grob <- ggplotGrob(alaska_plot)
+hawaii_grob <- ggplotGrob(hawaii_plot)
+
+# Add Alaska and Hawaii as insets to the main plot
+main_plot + 
+  annotation_custom(grob = alaska_grob, xmin = -135, xmax = -100, ymin = 15, ymax = 45) +
+  annotation_custom(grob = hawaii_grob, xmin = -110, xmax = -85, ymin = 20, ymax = 30)
+
+# Save or view the plot
+if (!dir.exists("plots")) {
+  # If it doesn't exist, create it
+  dir.create("plots")
+}
+ggsave("plots/median_earning_map_2018.png", width = 10, height = 6, units = "in")
+```
+
+
+```{r 2017_median_earning, fig.width=7, fig.height=5, eval = FALSE}
+df_main <- subset(df_17_1, !NAME %in% c("Alaska", "Hawaii"))
+df_alaska <- subset(df_17_1, NAME == "Alaska")
+df_hawaii <- subset(df_17_1, NAME == "Hawaii")
+
+# Create the main plot
+main_plot <- ggplot(df_main, aes(fill = med_earnE)) +
+  geom_sf(alpha = 0.8) +
+  geom_sf_text(aes(label = NAME), size = 2, check_overlap = TRUE) +
+  scale_fill_viridis_c(option = "D", direction = -1, labels = dollar) +
+  labs(
+    title = "2017 Median Earning by State in the United States",
+    subtitle = "Visualization of median earnings across different states",
+    caption = "Data source: ACS state data 2017\nVisualization created using R",
+    fill = "Median Earning",
+    x = "Longitude",
+    y = "Latitude"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    plot.subtitle = element_text(size = 12),
+    plot.caption = element_text(size = 8, hjust = 0),
+    legend.position = "bottom",
+    legend.title.align = 0.5,
+    legend.background = element_rect(fill = "gray90", colour = NA),
+    legend.key.width = unit(1.5, "cm"),
+    text = element_text(size = 5),
+    axis.title.x = element_text(size = 10),
+    axis.title.y = element_text(size = 10)
+  ) +
+  coord_sf(xlim = c(-135, -60), ylim = c(25, 50), datum = NA)
+
+# Create the Alaska plot
+alaska_plot <- ggplot(df_alaska, aes(fill = med_earnE)) +
+  geom_sf(alpha = 0.8) +
+  geom_sf_text(aes(label = NAME), size = 2) +
+  scale_fill_viridis_c(option = "D", direction = -1, labels = dollar) +
+  theme_void() +
+  theme(legend.position = "none") +
+  coord_sf(datum = NA)
+
+# Create the Hawaii plot
+hawaii_plot <- ggplot(df_hawaii, aes(fill = med_earnE)) +
+  geom_sf(alpha = 0.8) +
+  geom_sf_text(aes(label = NAME), size = 2) +
+  scale_fill_viridis_c(option = "D", direction = -1, labels = dollar) +
+  theme_void() +
+  theme(legend.position = "none") +
+  coord_sf(datum = NA)
+
+# Create grobs from the Alaska and Hawaii plots
+alaska_grob <- ggplotGrob(alaska_plot)
+hawaii_grob <- ggplotGrob(hawaii_plot)
+
+# Add Alaska and Hawaii as insets to the main plot
+main_plot + 
+  annotation_custom(grob = alaska_grob, xmin = -135, xmax = -100, ymin = 15, ymax = 45) +
+  annotation_custom(grob = hawaii_grob, xmin = -110, xmax = -85, ymin = 20, ymax = 30)
+
+# Save or view the plot
+if (!dir.exists("plots")) {
+  # If it doesn't exist, create it
+  dir.create("plots")
+}
+ggsave("plots/median_earning_map_2017.png", width = 10, height = 6, units = "in")
+```
+
+
+```{r 2016_median_earning, fig.width=7, fig.height=5, eval = FALSE}
+df_main <- subset(df_16_1, !NAME %in% c("Alaska", "Hawaii"))
+df_alaska <- subset(df_16_1, NAME == "Alaska")
+df_hawaii <- subset(df_16_1, NAME == "Hawaii")
+
+# Create the main plot
+main_plot <- ggplot(df_main, aes(fill = med_earnE)) +
+  geom_sf(alpha = 0.8) +
+  geom_sf_text(aes(label = NAME), size = 2, check_overlap = TRUE) +
+  scale_fill_viridis_c(option = "D", direction = -1, labels = dollar) +
+  labs(
+    title = "2016 Median Earning by State in the United States",
+    subtitle = "Visualization of median earnings across different states",
+    caption = "Data source: ACS state data 2016\nVisualization created using R",
+    fill = "Median Earning",
+    x = "Longitude",
+    y = "Latitude"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    plot.subtitle = element_text(size = 12),
+    plot.caption = element_text(size = 8, hjust = 0),
+    legend.position = "bottom",
+    legend.title.align = 0.5,
+    legend.background = element_rect(fill = "gray90", colour = NA),
+    legend.key.width = unit(1.5, "cm"),
+    text = element_text(size = 5),
+    axis.title.x = element_text(size = 10),
+    axis.title.y = element_text(size = 10)
+  ) +
+  coord_sf(xlim = c(-135, -60), ylim = c(25, 50), datum = NA)
+
+# Create the Alaska plot
+alaska_plot <- ggplot(df_alaska, aes(fill = med_earnE)) +
+  geom_sf(alpha = 0.8) +
+  geom_sf_text(aes(label = NAME), size = 2) +
+  scale_fill_viridis_c(option = "D", direction = -1, labels = dollar) +
+  theme_void() +
+  theme(legend.position = "none") +
+  coord_sf(datum = NA)
+
+# Create the Hawaii plot
+hawaii_plot <- ggplot(df_hawaii, aes(fill = med_earnE)) +
+  geom_sf(alpha = 0.8) +
+  geom_sf_text(aes(label = NAME), size = 2) +
+  scale_fill_viridis_c(option = "D", direction = -1, labels = dollar) +
+  theme_void() +
+  theme(legend.position = "none") +
+  coord_sf(datum = NA)
+
+# Create grobs from the Alaska and Hawaii plots
+alaska_grob <- ggplotGrob(alaska_plot)
+hawaii_grob <- ggplotGrob(hawaii_plot)
+
+# Add Alaska and Hawaii as insets to the main plot
+main_plot + 
+  annotation_custom(grob = alaska_grob, xmin = -135, xmax = -100, ymin = 15, ymax = 45) +
+  annotation_custom(grob = hawaii_grob, xmin = -110, xmax = -85, ymin = 20, ymax = 30)
+
+# Save or view the plot
+ggsave("plots/median_earning_map_2016.png", width = 10, height = 6, units = "in")
+```
+
+## total college enrollment 
+```{r 2019_college_enrollment, fig.width=7, fig.height=5, eval = FALSE}
+df_19_1$sum_enroll <- df_19_1$total_collE + df_19_1$total_graE
+df_main <- subset(df_19_1, !NAME %in% c("Alaska", "Hawaii"))
+df_alaska <- subset(df_19_1, NAME == "Alaska")
+df_hawaii <- subset(df_19_1, NAME == "Hawaii")
+
+# Create the main plot
+main_plot <- ggplot(df_main, aes(fill = sum_enroll)) +
+  geom_sf(alpha = 0.8) +
+  geom_sf_text(aes(label = NAME), size = 2, check_overlap = TRUE) +
+  scale_fill_viridis_c(option = "D", direction = -1, labels = dollar) +
+  labs(
+    title = "2019 U.S. Statewise Enrollment in Higher Education: \nA Geographic Overview",
+    caption = "Data source: ACS state data 2019\nVisualization created using R",
+    fill = "Undergrad&Grad Enrollment",
+    x = "Longitude",
+    y = "Latitude"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    plot.subtitle = element_text(size = 12),
+    plot.caption = element_text(size = 8, hjust = 0),
+    legend.position = "bottom",
+    legend.title.align = 0.5,
+    legend.background = element_rect(fill = "gray90", colour = NA),
+    legend.key.width = unit(1.5, "cm"),
+    text = element_text(size = 5),
+    axis.title.x = element_text(size = 10),
+    axis.title.y = element_text(size = 10)
+  ) +
+  coord_sf(xlim = c(-135, -60), ylim = c(25, 50), datum = NA)
+
+# Create the Alaska plot
+alaska_plot <- ggplot(df_alaska, aes(fill = sum_enroll)) +
+  geom_sf(alpha = 0.8) +
+  geom_sf_text(aes(label = NAME), size = 2) +
+  scale_fill_viridis_c(option = "D", direction = -1, labels = dollar) +
+  theme_void() +
+  theme(legend.position = "none") +
+  coord_sf(datum = NA)
+
+# Create the Hawaii plot
+hawaii_plot <- ggplot(df_hawaii, aes(fill = sum_enroll)) +
+  geom_sf(alpha = 0.8) +
+  geom_sf_text(aes(label = NAME), size = 2) +
+  scale_fill_viridis_c(option = "D", direction = -1, labels = dollar) +
+  theme_void() +
+  theme(legend.position = "none") +
+  coord_sf(datum = NA)
+
+# Create grobs from the Alaska and Hawaii plots
+alaska_grob <- ggplotGrob(alaska_plot)
+hawaii_grob <- ggplotGrob(hawaii_plot)
+
+# Add Alaska and Hawaii as insets to the main plot
+main_plot + 
+  annotation_custom(grob = alaska_grob, xmin = -135, xmax = -100, ymin = 15, ymax = 45) +
+  annotation_custom(grob = hawaii_grob, xmin = -110, xmax = -85, ymin = 20, ymax = 30)
+
+ggsave("plots/Undergra_grad_Enroll_map_2019.png", width = 10, height = 6, units = "in")
+```
+
 
 
 

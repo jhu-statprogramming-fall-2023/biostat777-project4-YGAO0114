@@ -1,0 +1,14 @@
+"0","# Add Alaska and Hawaii as insets to the main plot
+main_plot + 
+  annotation_custom(grob = alaska_grob, xmin = -135, xmax = -100, ymin = 15, ymax = 45) +
+  annotation_custom(grob = hawaii_grob, xmin = -110, xmax = -85, ymin = 20, ymax = 30)
+# Add Alaska and Hawaii as insets to the main plot
+main_plot + 
+  annotation_custom(grob = alaska_grob, xmin = -135, xmax = -100, ymin = 15, ymax = 45) +
+  annotation_custom(grob = hawaii_grob, xmin = -110, xmax = -85, ymin = 20, ymax = 30)
+"
+"0","# Save or view the plot"
+"0","if (!dir.exists(""plots"")) {"
+"0","  # If it doesn't exist, create it"
+"0","  dir.create(""plots"")"
+"0","}"

@@ -1,0 +1,10 @@
+"0","# if I remove the geometry
+df19_1_nogeo <- df19_1 %>% select(-df19_1$geometry)
+"
+"1","[1m[33mError[39m in `select()`:[22m
+[33m![39m Can't subset columns with `df19_1$geometry`.
+[31m✖[39m `df19_1$geometry` must be numeric or character, not a <sfc_MULTIPOLYGON/sfc> object.
+Backtrace:
+[90m  1. [39mdf19_1 %>% select(-df19_1$geometry)
+[90m 17. [39m[1mrlang[22m::cnd_signal(x)
+"

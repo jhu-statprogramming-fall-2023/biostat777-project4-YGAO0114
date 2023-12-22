@@ -3,7 +3,11 @@ title: "project 4"
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
+    source_code: embed
     vertical_layout: fill
+    theme:
+      version: 5
+      bootswatch: lux
 runtime: shiny
 ---
 
@@ -15,33 +19,59 @@ library(tidyverse)
 library(DT)
 library(shiny)
 ```
-# new page1 {data-orientation=columns}
 
-## Column {data-width=650}
-
-### Chart A
-
-```{r}
-
+```{r，include=FALSE}
+# use later
 ```
 
-## Column {data-width=350} {.tabset} 
 
-### Chart B
 
-```{r}
+# About {data-orientation=rows}
 
-```
+## column 
 
-### Chart C
+### Data
+Part 1: Identify the data
 
-```{r}
+  - The data is from [tidycensus](https://walker-data.com/tidycensus/articles/spatial-data.html).
+  - For the following task, all the code can be found here: [part 1 code](https://github.com/jhu-statprogramming-fall-2023/biostat777-project4-YGAO0114/blob/main/data_loading%26analysis.Rmd)
+  
+    - Test if a directory named data exists locally. If it does not, write an R function that creates it programmatically.
+    - Save the data only once.
+    - Read in the data locally each time you knit/render.
 
-```
+# median earning {data-orientation=columns}
 
-# new page2 {data-orientation=columns}
+## Column {data-width=100}
+
+### About This Page
+This page shows the median earning from 2016 to 2019. You can check different years by clicking the tab.
+
+### Code
+See the [plotting code on GitHub](https://github.com/jhu-statprogramming-fall-2023/biostat777-project4-YGAO0114/blob/main/data_loading%26analysis.Rmd).
+
+## Column {data-width=250} {.tabset}
+### Median Earning Map 2019 
+![](plots/median_earning_map_2019.png){width=1000px}
+
+### 2018 
+![](plots/median_earning_map_2018.png){width=1000px}
+
+### 2017
+![](plots/median_earning_map_2017.png){width=1000px}
+
+### 2016
+![](plots/median_earning_map_2016.png){width=1000px}
+
+# Higher Education Enrollment {data-orientation=columns}
+
+## Column {data-width=250} {.tabset}
+### Enrollment in Higher Education 2019
+
+![](plots/Undergra_grad_Enroll_map_2019.png){width=1000px}
+
+### 2018
+
+# Analysis {data-orientation=columns}
 
 ## column 1 {.sidebar}
-
-yuan
-weihang
