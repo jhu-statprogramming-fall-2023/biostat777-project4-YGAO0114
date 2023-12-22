@@ -13,17 +13,17 @@
         "tempName": "Untitled1",
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "74,0",
-        "scrollLine": "65",
+        "cursorPosition": "37,0",
+        "scrollLine": "24",
         "last_setup_crc32": "2b93b551a57151f4",
         "docOutlineVisible": "1"
     },
-    "folds": "",
-    "lastKnownWriteTime": 1703210355,
+    "folds": "38|8|55|0|\n56|34|78|0|\n79|43|101|0|\n102|56|126|0|\n129|37|131|22|\n",
+    "lastKnownWriteTime": 1703213603,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1703210355270,
+    "last_content_update": 1703213603875,
     "read_only": false,
     "read_only_alternatives": []
 }

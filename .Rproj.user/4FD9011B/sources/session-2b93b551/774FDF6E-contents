@@ -7,7 +7,7 @@ output:
     vertical_layout: fill
     theme:
       version: 5
-      bootswatch: lux
+      bootswatch: minty
 runtime: shiny
 ---
 
@@ -20,17 +20,27 @@ library(DT)
 library(shiny)
 ```
 
-```{r，include=FALSE}
-# use later
+```{r global}
+# load the data here 
+# here is the detailed code for loading and saving the data: https://github.com/jhu-statprogramming-fall-2023/biostat777-project4-YGAO0114/blob/main/data_loading%26analysis.Rmd
+df19_file_path <- "data/df19_1_nogeo.csv"
+df19 <- read.csv(df19_file_path, header = TRUE)
+df18_file_path <- "data/df18_1_nogeo.csv"
+df18 <- read.csv(df18_file_path, header = TRUE)
+df17_file_path <- "data/df17_1_nogeo.csv"
+df17 <- read.csv(df17_file_path, header = TRUE)
+df16_file_path <- "data/df16_1_nogeo.csv"
+df16 <- read.csv(df16_file_path, header = TRUE)
+combined_df <- rbind(df16, df17, df18, df19)
 ```
 
 
 
-# About {data-orientation=rows}
+# About 
 
-## column 
+## column {data-orientation=rows}
 
-### Data
+### Data 
 Part 1: Identify the data
 
   - The data is from [tidycensus](https://walker-data.com/tidycensus/articles/spatial-data.html).
@@ -39,6 +49,33 @@ Part 1: Identify the data
     - Test if a directory named data exists locally. If it does not, write an R function that creates it programmatically.
     - Save the data only once.
     - Read in the data locally each time you knit/render.
+
+
+### Purpose of this dashboard
+This dashboard investigates the yearly change of median earning and enrollment in high education
+
+# The Data {data-orientation=rows}
+## Column 
+```{r}
+DT::renderDataTable({
+  DT::datatable(combined_df,
+                extensions = 'Buttons',  # Ensure to include this
+                options = list(
+                  autoWidth = TRUE,
+                  pageLength = 25,
+                  scroller = TRUE,
+                  scrollY = '450px',
+                  dom = 'Bfrtip',  # This line is necessary to display buttons
+                  buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
+                ),
+                caption = htmltools::tags$caption(
+                  style = 'caption-side: top; text-align: Left;')
+  )
+})
+```
+
+
+
 
 # median earning {data-orientation=columns}
 
@@ -87,6 +124,8 @@ See the [plotting code on GitHub](https://github.com/jhu-statprogramming-fall-20
 ### 2016
 
 ![](plots/Undergra_grad_Enroll_map_2016.png){width=1000px}
+
+# Yearly Change
 
 # Analysis {data-orientation=columns}
 
